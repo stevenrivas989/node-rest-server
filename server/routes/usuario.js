@@ -2,9 +2,12 @@ const express = require('express')
 const bcrypt = require("bcrypt");
 const Usuario = require("../models/usuario");
 const _ = require("underscore");
-
+const { verificaToken, verificarAdminRol } = require("../middleware/authentication");
 const app = express();
-app.get("/usuario", function (req, res) {
+
+
+
+app.get("/usuario", verificaToken, (req, res) => {
 
     let desde = req.query.desde || 0;
     desde = Number(desde);
@@ -13,7 +16,7 @@ app.get("/usuario", function (req, res) {
     limite = Number(limite);
 
 
-    Usuario.find({estado:true}, 'nombre email role estado google img')
+    Usuario.find({ estado: true }, 'nombre email role estado google img')
         .skip(desde)
         .limit(limite)
         .exec((err, usuarios) => {
@@ -24,7 +27,7 @@ app.get("/usuario", function (req, res) {
                 });
             }
 
-            Usuario.countDocuments({estado:true}, (err, conteo) => {
+            Usuario.countDocuments({ estado: true }, (err, conteo) => {
                 if (err) {
                     return res.status(400).json({
                         ok: false,
@@ -44,7 +47,7 @@ app.get("/usuario", function (req, res) {
 
 })
 
-app.post("/usuario", async (req, res) => {
+app.post("/usuario", [verificaToken, verificarAdminRol], async (req, res) => {
 
     let body = req.body;
 
@@ -73,7 +76,7 @@ app.post("/usuario", async (req, res) => {
 });
 
 
-app.put("/usuario/:id", function (req, res) {
+app.put("/usuario/:id", [verificaToken,verificarAdminRol], function (req, res) {
 
     let id = req.params.id;
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
@@ -96,7 +99,7 @@ app.put("/usuario/:id", function (req, res) {
 });
 
 
-app.delete("/usuario/:id", function (req, res) {
+app.delete("/usuario/:id", [verificaToken,verificarAdminRol], function (req, res) {
     let id = req.params.id;
 
     Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
@@ -122,7 +125,7 @@ app.delete("/usuario/:id", function (req, res) {
     })
 })
 
-app.put("/usuario/desactivar/:id", function (req, res) {
+app.put("/usuario/desactivar/:id", [verificaToken,verificarAdminRol], function (req, res) {
 
     let id = req.params.id;
     let cambiaEstado = { estado: false };
