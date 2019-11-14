@@ -35,12 +35,36 @@ app.post("/usuario", async (req, res) => {
     }
 
     res.json({ persona: body })
-})
+});
+
+
 app.put("/usuario/:id", function (req, res) {
 
     let id = req.params.id;
-    res.json({ id })
-})
+    let body = req.body;
+
+    delete body.google;
+    delete body.password;
+    delete body.role;
+
+    Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
+
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                message: err
+            });
+        }
+
+        res.json({
+            ok: true,
+            message: usuarioDB
+        })
+    })
+
+});
+
+
 app.delete("/usuario", function (req, res) {
     res.json("delete usuario")
 })
