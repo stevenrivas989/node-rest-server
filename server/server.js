@@ -14,7 +14,7 @@ app.use(require("./routes/usuario"))
 
 conectarBaseDeDatos = async () => {
     try {
-        await mongoose.connect('mongodb://localhost:27017/cafe', {
+        await mongoose.connect(process.env.URLDB, {
             useNewUrlParser: true,
             useCreateIndex: true,
             useUnifiedTopology: true,
