@@ -2,6 +2,7 @@ require("./config/config");
 require("./bd/index");
 const bodyParser = require('body-parser')
 const express = require('express')
+const path = require("path");
 const app = express();
 
 /**USE**/
@@ -9,6 +10,9 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
+
+//Habilitar publi
+app.use(express.static(path.resolve(__dirname, "./public")))
 
 //Configuración global de rutas
 app.use(require("./routes/index"));
