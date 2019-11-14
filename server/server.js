@@ -4,7 +4,6 @@ const express = require('express')
 const app = express();
 const mongoose = require("mongoose");
 
-
 /**USE**/
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -19,7 +18,7 @@ conectarBaseDeDatos = async () => {
             useNewUrlParser: true,
             useCreateIndex: true,
             useUnifiedTopology: true,
-            useFindAndModify:false
+            useFindAndModify: false
         });
 
         console.log("BD conectada");

@@ -2,12 +2,38 @@ const express = require('express')
 const app = express();
 const bcrypt = require("bcrypt");
 const Usuario = require("../models/usuario");
+const _ = require("underscore");
 
 app.get("/usuario", function (req, res) {
-    res.json("get usuario")
+
+    let desde = req.query.desde || 0;
+    desde = Number(desde);
+
+    let limite = req.query.limite || 0;
+    limite = Number(limite);
+
+
+    Usuario.find({})
+        .skip(desde)
+        .limit(limite)
+        .exec((err, usuarios) => {
+            if (err) {
+                return res.status(400).json({
+                    ok: false,
+                    message: err
+                });
+            }
+
+            res.json({
+                ok: true,
+                message: usuarios
+            })
+        })
+
 })
 
 app.post("/usuario", async (req, res) => {
+
     let body = req.body;
 
     try {
@@ -20,7 +46,6 @@ app.post("/usuario", async (req, res) => {
         });
 
         await usuario.save();
-
         res.json({
             ok: true,
             usuario
@@ -33,19 +58,13 @@ app.post("/usuario", async (req, res) => {
             messagge
         });
     }
-
-    res.json({ persona: body })
 });
 
 
 app.put("/usuario/:id", function (req, res) {
 
     let id = req.params.id;
-    let body = req.body;
-
-    delete body.google;
-    delete body.password;
-    delete body.role;
+    let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
 
     Usuario.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, usuarioDB) => {
 
