@@ -39,11 +39,11 @@ app.get("/usuario", verificaToken, (req, res) => {
                     ok: true,
                     usuarios,
                     cuantos: conteo
-                })
+                });
 
-            })
+            });
 
-        })
+        });
 
 })
 

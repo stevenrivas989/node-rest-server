@@ -28,7 +28,7 @@ app.post("/login", (req, res) => {
             });
         }
 
-        usuarioBD = _.pick(usuarioBD, ['nombre', 'email', 'img', 'role', 'estado']);
+        usuarioBD = _.pick(usuarioBD, ['nombre', 'email', 'img', 'role', 'estado', '_id']);
 
         let token = jwt.sign({
             usuario: usuarioBD
