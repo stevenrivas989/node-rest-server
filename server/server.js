@@ -1,8 +1,8 @@
 require("./config/config");
+require("./bd/index");
 const bodyParser = require('body-parser')
 const express = require('express')
 const app = express();
-const mongoose = require("mongoose");
 
 /**USE**/
 // parse application/x-www-form-urlencoded
@@ -10,26 +10,11 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-app.use(require("./routes/usuario"))
+//Configuración global de rutas
+app.use(require("./routes/index"));
 
-conectarBaseDeDatos = async () => {
-    try {
-        await mongoose.connect(process.env.URLDB, {
-            useNewUrlParser: true,
-            useCreateIndex: true,
-            useUnifiedTopology: true,
-            useFindAndModify: false
-        });
-
-        console.log("BD conectada");
-    } catch (e) {
-        console.log("Error en BD");
-    }
-
-}
-
+//Conexión BD
 conectarBaseDeDatos();
-
 
 /**REQUEST */
 

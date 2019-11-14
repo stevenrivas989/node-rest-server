@@ -1,9 +1,9 @@
 const express = require('express')
-const app = express();
 const bcrypt = require("bcrypt");
 const Usuario = require("../models/usuario");
 const _ = require("underscore");
 
+const app = express();
 app.get("/usuario", function (req, res) {
 
     let desde = req.query.desde || 0;
