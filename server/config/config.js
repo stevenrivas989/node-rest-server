@@ -8,7 +8,9 @@ process.env.PORT = process.env.PORT || 3000;
 // Authorization y Authentication
 //========================================
 
+// 1000 = 1 seg
 process.env.CADUCIDAD_TOKEN = 1000 * 60 * 30;
+
 process.env.SEED = process.env.SEED || "este-es-el-seed-desarrollo";
 
 //========================================
