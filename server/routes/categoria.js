@@ -6,8 +6,8 @@ const app = express();
 app.get("/categoria", verificaToken, (req, res) => {
 
     Categoria.find({})
-    .sort("descripcion")
-    .populate("usuario","nombre email")
+        .sort("descripcion")
+        .populate("usuario", "nombre email")
         .exec((err, categorias) => {
             if (err) {
                 return res.status(400).json({
@@ -16,21 +16,11 @@ app.get("/categoria", verificaToken, (req, res) => {
                 });
             }
 
-            Categoria.countDocuments({}, (err, conteo) => {
-                if (err) {
-                    return res.status(400).json({
-                        ok: false,
-                        message: err
-                    });
-                }
-
-                res.json({
-                    ok: true,
-                    categorias,
-                    cuantos: conteo
-                });
-
+            res.json({
+                ok: true,
+                categorias
             });
+
         });
 });
 
@@ -56,7 +46,7 @@ app.post("/categoria", [verificaToken], async (req, res) => {
 
     let body = req.body;
     let usuario = req.usuario._id;
-    
+
     try {
 
         let categoria = new Categoria({
