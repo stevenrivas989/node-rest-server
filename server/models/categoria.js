@@ -4,9 +4,13 @@ let Schema = mongoose.Schema;
 
 
 let categoriaSchema = new Schema({
-    idUsuario: {
-        type: String,
-        required: true
+    usuario: {
+        type: Schema.Types.ObjectId,
+        ref:"Usuario"
+    },
+    descripcion:{
+        type:String,
+        required:[true,"La descripción es requerida."]
     }
 });
 

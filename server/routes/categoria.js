@@ -4,15 +4,9 @@ const { verificaToken, verificarAdminRol } = require("../middleware/authenticati
 const app = express();
 
 app.get("/categoria", verificaToken, (req, res) => {
-    let desde = req.query.desde || 0;
-    desde = Number(desde);
-
-    let limite = req.query.limite || 0;
-    limite = Number(limite);
 
     Categoria.find({})
-        .skip(desde)
-        .limit(limite)
+    .populate("usuario","nombre email")
         .exec((err, categorias) => {
             if (err) {
                 return res.status(400).json({
@@ -43,8 +37,6 @@ app.get("/categoria/:id", verificaToken, (req, res) => {
 
     let idCategoria = req.params.id;
     Categoria.findById(idCategoria, (err, categoria) => {
-        console.log("A3", categoria);
-
         if (err) {
             return res.status(400).json({
                 ok: false,
@@ -61,13 +53,14 @@ app.get("/categoria/:id", verificaToken, (req, res) => {
 
 app.post("/categoria", [verificaToken], async (req, res) => {
 
-    let idUsuario = req.usuario._id;
-    console.log(req.usuario);
-
+    let body = req.body;
+    let usuario = req.usuario._id;
+    
     try {
 
         let categoria = new Categoria({
-            idUsuario: idUsuario
+            descripcion: body.descripcion,
+            usuario
         });
 
         await categoria.save();
@@ -88,9 +81,10 @@ app.post("/categoria", [verificaToken], async (req, res) => {
 app.put("/categoria/:id", [verificaToken], function (req, res) {
 
     let id = req.params.id;
-    let idUsuario = req.usuario._id;
+    let body = req.body;
+    body.usuarios = req.usuario._id;
 
-    Categoria.findByIdAndUpdate(id, { idUsuario }, { new: true, runValidators: true }, (err, categoriaDB) => {
+    Categoria.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, categoriaDB) => {
 
         if (err) {
             return res.status(400).json({
