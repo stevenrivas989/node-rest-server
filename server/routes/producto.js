@@ -32,8 +32,7 @@ app.get("/producto", verificaToken, (req, res) => {
 
             res.json({
                 ok: true,
-                categorias,
-                cuantos: conteo
+                productos
             });
         })
 })
@@ -42,7 +41,20 @@ app.get("/producto", verificaToken, (req, res) => {
  *  Obtener producto por id
  */
 app.get("/producto/:id", verificaToken, (req, res) => {
+    let idProducto = req.params.id;
+    Producto.findById(idProducto, (err, producto) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                message: err
+            });
+        }
 
+        res.json({
+            ok: true,
+            producto
+        })
+    });
 })
 
 /**
@@ -89,12 +101,12 @@ app.post("/producto", verificaToken, (req, res) => {
 /**
  *  Actualizar producto
  */
-app.put("/producto:id", verificaToken, (req, res) => {
+app.put("/producto/:id", verificaToken, (req, res) => {
 
     let id = req.params.id;
     let body = req.body;
 
-    Producto.findByIdAndUpdate(id, { new: true, runValidators: true }, (err, productoBD) => {
+    Producto.findByIdAndUpdate(id, body, { new: true, runValidators: true }, (err, productoBD) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
@@ -113,8 +125,30 @@ app.put("/producto:id", verificaToken, (req, res) => {
 /**
  *  Borrar producto
  */
-app.delete("/producto", (req, res) => {
+app.delete("/producto/:id", (req, res) => {
+    let id = req.params.id;
 
+    Producto.findByIdAndRemove(id, (err, productoBorrado) => {
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                message: err
+            });
+        }
+
+        if (productoBorrado === null) {
+            return res.status(400).json({
+                ok: false,
+                message: "Producto no encontrado"
+            });
+        }
+
+        res.json({
+            ok: true,
+            message: "Producto borrado"
+        })
+
+    })
 })
 
 
