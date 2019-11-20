@@ -1,5 +1,5 @@
 require("./config/config");
-require("./bd/index");
+require("./db/index");
 const bodyParser = require('body-parser')
 const express = require('express')
 const path = require("path");
