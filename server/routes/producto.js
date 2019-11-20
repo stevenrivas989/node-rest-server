@@ -58,6 +58,32 @@ app.get("/producto/:id", verificaToken, (req, res) => {
 })
 
 /**
+ * Buscar productos
+ */
+app.get("/producto/buscar/:termino", verificaToken, (req, res) => {
+    let termino = req.params.termino;
+
+    let regexTermino = new RegExp(termino,'i');
+    Producto.find({
+        nombre:regexTermino
+    })
+        .populate("categoria", "nombre")
+        .exec((err, productoDB)=>{
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    message: err
+                });
+            }
+
+            res.json({
+                ok:true,
+                productoDB
+            })
+        })
+});
+
+/**
  *  Guardar producto
  */
 app.post("/producto", verificaToken, (req, res) => {
